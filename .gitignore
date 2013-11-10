@@ -1,0 +1,18 @@
+Thumbs.db
+*.class
+*.blend1
+*.blend2
+
+#are generated automagically
+models.fbx
+/CityBuilder-android/assets/models.g3db
+/CityBuilder-android/assets/pack.atlas
+/CityBuilder-android/assets/pack*.png
+
+/CityBuilder-android/gen/*
+/CityBuilder-android/bin/*
+/CityBuilder-desktop/bin/*
+/CityBuilder/bin/*
+
+#nobody likes you, GWT
+/CityBuilder-html/*

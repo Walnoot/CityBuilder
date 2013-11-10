@@ -1,0 +1,13 @@
+{
+	raft: {
+		model: "Raft",
+		width: 1,
+		height: 1
+	},
+	engine: {
+		model: "Boat",
+		width: 1,
+		height: 2,
+		components: [EngineComponent]
+	}
+}
