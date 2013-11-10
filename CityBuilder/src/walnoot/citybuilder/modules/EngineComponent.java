@@ -17,10 +17,12 @@ public class EngineComponent extends Component{
 		boolean right = forcePos.x > city.getBody().getLocalCenter().x;
 		
 		int moveDir = 0;
-		if(InputHandler.get().moveUp.isPressed()) moveDir = 1;
-		if(InputHandler.get().moveDown.isPressed()) moveDir = -1;
-		if(InputHandler.get().moveLeft.isPressed()) moveDir = right ? 1 : -1;
-		if(InputHandler.get().moveRight.isPressed()) moveDir = right ? -1 : 1;
+		if(InputHandler.get().moveUp.isPressed()) moveDir += 1;
+		if(InputHandler.get().moveDown.isPressed()) moveDir += -1;
+		if(InputHandler.get().moveLeft.isPressed()) moveDir += right ? 1 : -1;
+		if(InputHandler.get().moveRight.isPressed()) moveDir += right ? -1 : 1;
+		
+		moveDir = MathUtils.clamp(moveDir, -1, 1);
 		
 		if(moveDir == -1) force.scl(-1f);
 		if(moveDir != 0) city.getBody().applyForce(force, city.getBody().getWorldPoint(forcePos), true);

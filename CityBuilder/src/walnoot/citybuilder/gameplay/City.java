@@ -134,9 +134,16 @@ public class City{
 			if(path != null){
 				goal.getClosedUnit().setPath(path);
 				goal.getClosedUnit().setPlannedModule(plannedModule);
+				
+				plannedModule.setDesignatedUnit(goal.getClosedUnit());
 			}
+			
 			availableUnits.size = 0;
 		}
+	}
+	
+	public void markCompleted(PlannedModule plannedModule){
+		plannedModules.removeValue(plannedModule, true);
 	}
 	
 	public boolean hasModule(int x, int y){
@@ -163,6 +170,10 @@ public class City{
 	
 	public Array<Unit> getUnits(){
 		return units;
+	}
+	
+	public Array<PlannedModule> getPlannedModules(){
+		return plannedModules;
 	}
 	
 	public void selectUnits(Rectangle selection, PerspectiveCamera camera, Array<Unit> selected){

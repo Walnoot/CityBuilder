@@ -75,9 +75,38 @@ public class Unit{
 					
 					city.addModule(goal);
 					
+					city.markCompleted(plannedModule);
 					PlannedModule.free(plannedModule);
 					plannedModule = null;
+					
+					searchNewModule();
 				}
+			}
+		}
+	}
+	
+	private void searchNewModule(){
+		PlannedModule nearest = null;
+		int nearestDist = Integer.MAX_VALUE;
+		
+		for(PlannedModule module : city.getPlannedModules()){
+			if(!module.isDesignated()){
+				int dist = Math.abs(module.getModule().x - x) + Math.abs(module.getModule().y - y);
+				if(dist < nearestDist){
+					nearestDist = dist;
+					nearest = module;
+				}
+			}
+		}
+		
+		if(nearest != null){
+			Node newPath = Pathfinder.get().getPath(city, x, y, ModuleGoal.get(nearest.getModule()));
+			
+			if(newPath != null){
+				setPath(newPath);
+				setPlannedModule(nearest);
+				
+				plannedModule.setDesignatedUnit(this);
 			}
 		}
 	}
