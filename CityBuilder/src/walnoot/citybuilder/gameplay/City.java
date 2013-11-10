@@ -1,9 +1,11 @@
 package walnoot.citybuilder.gameplay;
 
 import walnoot.citybuilder.Util;
+import walnoot.citybuilder.gameplay.Pathfinder.Node;
 import walnoot.citybuilder.modules.Module;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -23,6 +25,7 @@ public class City{
 	private Array<Module> modules = new Array<Module>(false, 32);
 	private Array<PlannedModule> plannedModules = new Array<PlannedModule>(false, 32);
 	private Array<Unit> units = new Array<Unit>(false, 32);
+	private Array<Unit> tmpUnitList = new Array<Unit>(false, 32);
 	
 	private Body body;
 	private Matrix3 matrix = new Matrix3(), invMatrix = new Matrix3();
@@ -65,7 +68,7 @@ public class City{
 		}
 	}
 	
-	public Vector2 getMouseCityCoordinates(PerspectiveCamera cam){
+	public Vector2 getMouseCityCoordinates(Camera cam){
 		Ray ray = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 		Intersector.intersectRayPlane(ray, Util.XY_PLANE, Util.TMP_3);
 		
@@ -118,8 +121,21 @@ public class City{
 		PlannedModule plannedModule = PlannedModule.get(module);
 		plannedModules.add(plannedModule);
 		
-		for(int i = 0; i < units.size; i++){
-			if(units.get(i).buildEvent(plannedModule)) break;
+		Array<Unit> availableUnits = tmpUnitList;
+		
+		for(Unit unit : units){
+			if(!unit.isBusy()) availableUnits.add(unit);
+		}
+		
+		if(availableUnits.size != 0){
+			UnitGoal goal = UnitGoal.get(availableUnits, module);
+			Node path = Pathfinder.get().getPath(this, module.x, module.y, goal);
+			
+			if(path != null){
+				goal.getClosedUnit().setPath(path);
+				goal.getClosedUnit().setPlannedModule(plannedModule);
+			}
+			availableUnits.size = 0;
 		}
 	}
 	

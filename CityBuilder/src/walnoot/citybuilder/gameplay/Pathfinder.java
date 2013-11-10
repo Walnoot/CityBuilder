@@ -54,17 +54,17 @@ public class Pathfinder{
 			Node current = getLowestF();
 			
 			if(goal.reachedGoal(current.x, current.y)){
-				if(goal.reverseNodes()) return reverse(current);
-				else return current;
+				if(goal.reverseNodes()) return goal.processPath(reverse(current));
+				else return goal.processPath(current);
 			}
 			
 			openList.removeValue(current, true);
 			closedList.add(current);
 			
-			checkNewNode(nodePool.obtain().init(current.x + 1, current.y, current, goal), city);
-			checkNewNode(nodePool.obtain().init(current.x - 1, current.y, current, goal), city);
-			checkNewNode(nodePool.obtain().init(current.x, current.y + 1, current, goal), city);
-			checkNewNode(nodePool.obtain().init(current.x, current.y - 1, current, goal), city);
+			checkNewNode(nodePool.obtain().init(current.x + 1, current.y, current, goal), city, goal);
+			checkNewNode(nodePool.obtain().init(current.x - 1, current.y, current, goal), city, goal);
+			checkNewNode(nodePool.obtain().init(current.x, current.y + 1, current, goal), city, goal);
+			checkNewNode(nodePool.obtain().init(current.x, current.y - 1, current, goal), city, goal);
 		}
 		
 		return null;
@@ -103,8 +103,8 @@ public class Pathfinder{
 		return lowestNode;
 	}
 	
-	private void checkNewNode(Node node, City city){
-		if(city.getModule(node.x, node.y) == null) return;
+	private void checkNewNode(Node node, City city, Goal goal){
+		if(!goal.canWalk(city, node.x, node.y)) return;
 		if(isOnList(closedList, node) != null) return;
 		
 		Node openNode = isOnList(openList, node);
@@ -142,15 +142,25 @@ public class Pathfinder{
 		}
 	}
 	
-	public static interface Goal{
+	public static abstract class Goal{
 		public abstract boolean reachedGoal(int x, int y);
 		
-		public abstract int getH(int x, int y);
+		public int getH(int x, int y){
+			return 0;
+		}
 		
 		public abstract boolean reverseNodes();
+		
+		public boolean canWalk(City city, int x, int y){
+			return city.hasModule(x, y);
+		}
+		
+		public Node processPath(Node path){
+			return path;
+		}
 	}
 	
-	private static class DefaultGoal implements Goal{
+	private static class DefaultGoal extends Goal{
 		private int goalX, goalY;
 		
 		@Override

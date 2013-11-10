@@ -128,7 +128,6 @@ public class GameScreen extends UpdateScreen{
 	
 	private void setupBuildList(){
 		buildListTable = new Table();
-		buildListTable.setVisible(false);
 		buildListTable.left().top().setFillParent(true);
 		game.getStage().addActor(buildListTable);
 		
@@ -168,7 +167,7 @@ public class GameScreen extends UpdateScreen{
 		
 		camera.update();
 		
-		renderer.render(world, camera.combined);
+//		renderer.render(world, camera.combined);
 		
 		modelBatch.begin(camera);
 		city.render(modelBatch);
@@ -323,7 +322,6 @@ public class GameScreen extends UpdateScreen{
 			
 			selectedUnits.size = 0;
 			city.selectUnits(selection, camera, selectedUnits);
-			buildListTable.setVisible(selectedUnits.size != 0);
 			setBuildIndex(-1);
 		}
 		

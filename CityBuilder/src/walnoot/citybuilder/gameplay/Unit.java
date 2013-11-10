@@ -87,17 +87,28 @@ public class Unit{
 	}
 	
 	public void walkTo(int x, int y){
-		setPath(Pathfinder.get().getPath(city, this.x, this.y, x, y));
+		setPath(Pathfinder.get().getPath(city, getFutureX(), getFutureY(), x, y));
 		
 		walkTimer = WALK_TIME;
 	}
 	
 	public void setPath(Node newPath){
 		if(path == null) path = newPath;
-		else{
-			if(path.parent != null) Pathfinder.get().poolNode(path.parent.parent);
-			path.parent = newPath;
-		}
+		else path.parent = newPath;
+	}
+	
+	public int getFutureX(){
+		if(path == null || path.parent == null) return x;
+		else return path.parent.x;
+	}
+	
+	public int getFutureY(){
+		if(path == null || path.parent == null) return y;
+		else return path.parent.y;
+	}
+	
+	public boolean isBusy(){
+		return plannedModule != null;
 	}
 	
 	public void setSelected(boolean selected){
@@ -106,19 +117,7 @@ public class Unit{
 		Util.setColor(modelInstance, selected ? Color.RED : Color.WHITE);
 	}
 	
-	public boolean buildEvent(PlannedModule plan){
-		if(plannedModule == null){
-			Node path = Pathfinder.get().getPath(city, x, y, ModuleGoal.get(plan.getModule()));
-			
-			if(path != null){
-				plannedModule = plan;
-				plan.setDesignatedUnit(this);
-				setPath(path);
-				
-				return true;
-			}
-		}
-		
-		return false;
+	public void setPlannedModule(PlannedModule plannedModule){
+		this.plannedModule = plannedModule;
 	}
 }

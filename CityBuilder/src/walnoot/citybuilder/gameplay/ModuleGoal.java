@@ -4,7 +4,7 @@ import walnoot.citybuilder.Util;
 import walnoot.citybuilder.gameplay.Pathfinder.Goal;
 import walnoot.citybuilder.modules.Module;
 
-public class ModuleGoal implements Goal{
+public class ModuleGoal extends Goal{
 	private static ModuleGoal instance = new ModuleGoal();
 	
 	/**
